@@ -1,0 +1,96 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
+  const scenes = document.querySelectorAll(".scene");
+
+  // ---------- Scene navigation ----------
+  function showScene(n) {
+    scenes.forEach((s) => s.classList.remove("active"));
+    const target = $("scene" + n);
+    if (!target) return;
+    target.classList.add("active");
+    if (Number(n) === 3) launchConfetti();
+  }
+
+  document.querySelectorAll("[data-next]").forEach((btn) => {
+    btn.addEventListener("click", () => showScene(btn.dataset.next));
+  });
+
+  // ---------- Scene 2: the question ----------
+  const askBtn = $("askBtn");
+  const question = $("question");
+  const thinkBtn = $("thinkBtn");
+  const answer = question.querySelector(".answer");
+  let thinkTimer;
+
+  askBtn.addEventListener("click", () => {
+    askBtn.classList.add("hidden");
+    question.classList.remove("hidden");
+  });
+
+  thinkBtn.addEventListener("click", () => {
+    thinkBtn.classList.add("hidden");
+    answer.classList.remove("hidden");
+    thinkTimer = setTimeout(() => showScene(3), 1800);
+  });
+
+  // ---------- Scene 3: confetti ----------
+  function launchConfetti() {
+    const box = $("confetti");
+    box.innerHTML = "";
+    const colors = ["#e8a9b3", "#c79a5b", "#f4cdd0", "#4b2730", "#fff2e7"];
+    for (let i = 0; i < 70; i++) {
+      const piece = document.createElement("i");
+      piece.style.left = Math.random() * 100 + "%";
+      piece.style.width = 6 + Math.random() * 7 + "px";
+      piece.style.height = 8 + Math.random() * 10 + "px";
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = Math.random() * 1.5 + "s";
+      piece.style.animationDuration = 2.5 + Math.random() * 2 + "s";
+      box.appendChild(piece);
+    }
+  }
+
+  // ---------- Scene 4: candles ----------
+  const cake = document.querySelector(".cake-wrap");
+  const blowBtn = $("blowBtn");
+  const afterBlow = $("afterBlow");
+
+  blowBtn.addEventListener("click", () => {
+    cake.classList.add("blown");
+    blowBtn.classList.add("hidden");
+    afterBlow.classList.remove("hidden");
+  });
+
+  // ---------- Scene 5: letter ----------
+  const envelope = $("envelope");
+  const openLetter = $("openLetter");
+  const letter = $("letter");
+  const letterNext = $("letterNext");
+
+  openLetter.addEventListener("click", () => {
+    envelope.classList.add("open");
+    openLetter.classList.add("hidden");
+    letter.classList.remove("hidden");
+    letterNext.classList.remove("hidden");
+  });
+
+  // ---------- Scene 7: replay ----------
+  $("replay").addEventListener("click", () => {
+    clearTimeout(thinkTimer);
+    // scene 2
+    askBtn.classList.remove("hidden");
+    question.classList.add("hidden");
+    thinkBtn.classList.remove("hidden");
+    answer.classList.add("hidden");
+    // scene 4
+    cake.classList.remove("blown");
+    blowBtn.classList.remove("hidden");
+    afterBlow.classList.add("hidden");
+    // scene 5
+    envelope.classList.remove("open");
+    openLetter.classList.remove("hidden");
+    letter.classList.add("hidden");
+    letterNext.classList.add("hidden");
+    showScene(1);
+  });
+});
